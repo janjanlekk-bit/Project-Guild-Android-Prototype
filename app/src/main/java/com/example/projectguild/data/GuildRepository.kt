@@ -31,6 +31,7 @@ interface GuildRepository {
     val screenTimeTransactions: StateFlow<List<ScreenTimeTransaction>>
     val coinTransactions: StateFlow<List<CoinTransaction>>
     val xpTransactions: StateFlow<List<XpTransaction>>
+    val lockedAppPackages: StateFlow<Set<String>>
 
     suspend fun acceptQuest(questId: String): Boolean
     suspend fun submitQuestProof(questId: String, proofNote: String = "📸 Photo verification attached"): Boolean
@@ -42,6 +43,10 @@ interface GuildRepository {
     fun getQuestById(questId: String): Quest?
     fun getAchievements(): List<Achievement>
     suspend fun resetToDefaultSampleData()
+
+    suspend fun setAppLocked(packageName: String, isLocked: Boolean)
+    fun isAppLocked(packageName: String): Boolean
+    suspend fun setScreenTimeMinutes(minutes: Int)
 }
 
 class DefaultGuildRepository(
@@ -65,6 +70,9 @@ class DefaultGuildRepository(
     private val _xpTransactions = MutableStateFlow<List<XpTransaction>>(emptyList())
     override val xpTransactions: StateFlow<List<XpTransaction>> = _xpTransactions.asStateFlow()
 
+    private val _lockedAppPackages = MutableStateFlow<Set<String>>(emptySet())
+    override val lockedAppPackages: StateFlow<Set<String>> = _lockedAppPackages.asStateFlow()
+
     init {
         loadFromStorage()
     }
@@ -76,6 +84,7 @@ class DefaultGuildRepository(
         _screenTimeTransactions.value = state.screenTimeTransactions
         _coinTransactions.value = state.coinTransactions
         _xpTransactions.value = state.xpTransactions
+        _lockedAppPackages.value = state.lockedPackageNames.toSet()
     }
 
     private fun persistCurrentState() {
@@ -85,9 +94,31 @@ class DefaultGuildRepository(
                 quests = _quests.value,
                 screenTimeTransactions = _screenTimeTransactions.value,
                 coinTransactions = _coinTransactions.value,
-                xpTransactions = _xpTransactions.value
+                xpTransactions = _xpTransactions.value,
+                lockedPackageNames = _lockedAppPackages.value.toList()
             )
         )
+    }
+
+    override suspend fun setAppLocked(packageName: String, isLocked: Boolean) = mutex.withLock {
+        val current = _lockedAppPackages.value.toMutableSet()
+        if (isLocked) {
+            current.add(packageName)
+        } else {
+            current.remove(packageName)
+        }
+        _lockedAppPackages.value = current
+        persistCurrentState()
+    }
+
+    override fun isAppLocked(packageName: String): Boolean {
+        return _lockedAppPackages.value.contains(packageName)
+    }
+
+    override suspend fun setScreenTimeMinutes(minutes: Int) = mutex.withLock {
+        val currentProfile = _playerProfile.value
+        _playerProfile.value = currentProfile.copy(screenTimeMinutes = minutes.coerceAtLeast(0))
+        persistCurrentState()
     }
 
     override suspend fun acceptQuest(questId: String): Boolean = mutex.withLock {

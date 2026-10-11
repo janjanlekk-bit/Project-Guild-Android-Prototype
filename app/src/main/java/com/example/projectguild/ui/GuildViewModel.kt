@@ -31,6 +31,8 @@ class GuildViewModel(
     val screenTimeTransactions: StateFlow<List<ScreenTimeTransaction>> = repository.screenTimeTransactions
     val coinTransactions: StateFlow<List<CoinTransaction>> = repository.coinTransactions
     val xpTransactions: StateFlow<List<XpTransaction>> = repository.xpTransactions
+    val lockedAppPackages: StateFlow<Set<String>> = repository.lockedAppPackages
+    val interceptedAppEvent = com.example.projectguild.service.AppLockAccessibilityService.lastInterceptedAppEvent
 
     val activeQuests: StateFlow<List<Quest>> = quests.map { list ->
         list.filter { it.status == QuestStatus.ACTIVE || it.status == QuestStatus.SUBMITTED || it.status == QuestStatus.REJECTED }
@@ -109,6 +111,22 @@ class GuildViewModel(
     }
 
     fun getAchievements(): List<Achievement> = repository.getAchievements()
+
+    fun toggleAppLock(packageName: String, isLocked: Boolean) {
+        viewModelScope.launch {
+            repository.setAppLocked(packageName, isLocked)
+        }
+    }
+
+    fun setScreenTimeMinutes(minutes: Int) {
+        viewModelScope.launch {
+            repository.setScreenTimeMinutes(minutes)
+        }
+    }
+
+    fun dismissInterceptedDialog() {
+        com.example.projectguild.service.AppLockAccessibilityService.clearInterceptEvent()
+    }
 
     class Factory(private val repository: GuildRepository) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")

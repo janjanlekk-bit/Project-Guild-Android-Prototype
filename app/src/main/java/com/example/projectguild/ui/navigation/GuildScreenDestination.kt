@@ -8,6 +8,7 @@ enum class GuildScreenDestination(
     SCREEN_TIME("screen_time", "Screen Time HQ"),
     COINS("coins", "Guild Coins HQ"),
     MATH("math", "Math Arena"),
-    PROFILE("profile", "Adventurer Profile")
+    PROFILE("profile", "Adventurer Profile"),
+    APP_LOCKER("app_locker", "App Locker")
 }
 

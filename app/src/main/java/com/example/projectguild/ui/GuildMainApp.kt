@@ -22,6 +22,8 @@ import com.example.projectguild.ui.math.MathViewModel
 import com.example.projectguild.ui.navigation.GuildScreenDestination
 import com.example.projectguild.ui.portal.MainPortalScreen
 import com.example.projectguild.ui.profile.ProfileScreen
+import com.example.projectguild.ui.screentime.AppLockerScreen
+import com.example.projectguild.ui.screentime.AppLockInterceptedDialog
 import com.example.projectguild.ui.screentime.ScreenTimeHomeScreen
 
 @Composable
@@ -43,6 +45,7 @@ fun GuildMainApp(
 
     val selectedQuest by guildViewModel.selectedQuestForDetail.collectAsState()
     val celebration by guildViewModel.rewardCelebration.collectAsState()
+    val interceptedAppEvent by guildViewModel.interceptedAppEvent.collectAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -67,6 +70,7 @@ fun GuildMainApp(
                     viewModel = guildViewModel,
                     onBackToPortal = { currentDestination = GuildScreenDestination.PORTAL },
                     onNavigateToMath = { navigateTo(GuildScreenDestination.MATH) },
+                    onNavigateToAppLocker = { navigateTo(GuildScreenDestination.APP_LOCKER) },
                     onNavigateToProfile = { navigateTo(GuildScreenDestination.PROFILE) },
                     modifier = modifier
                 )
@@ -94,6 +98,13 @@ fun GuildMainApp(
                     onBackClick = { currentDestination = previousDestination }
                 )
             }
+            GuildScreenDestination.APP_LOCKER -> {
+                AppLockerScreen(
+                    viewModel = guildViewModel,
+                    onBack = { currentDestination = GuildScreenDestination.SCREEN_TIME },
+                    modifier = modifier
+                )
+            }
         }
 
         // Quest Detail & Mock Approval Dialog (accessible from Coins Home)
@@ -113,6 +124,16 @@ fun GuildMainApp(
         RewardCelebrationDialog(
             celebration = celebration,
             onDismiss = { guildViewModel.dismissCelebration() }
+        )
+
+        // Screen Time Depleted Intercepted Dialog (triggered by Accessibility Service)
+        AppLockInterceptedDialog(
+            event = interceptedAppEvent,
+            onDismiss = { guildViewModel.dismissInterceptedDialog() },
+            onEarnScreenTime = {
+                guildViewModel.dismissInterceptedDialog()
+                navigateTo(GuildScreenDestination.MATH)
+            }
         )
     }
 }

@@ -16,7 +16,8 @@ data class GuildSaveState(
     val quests: List<Quest> = defaultQuests(),
     val screenTimeTransactions: List<ScreenTimeTransaction> = defaultScreenTimeTransactions(),
     val coinTransactions: List<CoinTransaction> = defaultCoinTransactions(),
-    val xpTransactions: List<XpTransaction> = defaultXpTransactions()
+    val xpTransactions: List<XpTransaction> = defaultXpTransactions(),
+    val lockedPackageNames: List<String> = emptyList()
 ) {
     companion object {
         fun defaultPlayerProfile(): PlayerProfile = PlayerProfile(

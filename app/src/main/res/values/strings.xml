@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Project Guild</string>
+    <string name="accessibility_service_description">Monitors opened apps to protect focus and enforce earned screen time limits.</string>
 </resources>

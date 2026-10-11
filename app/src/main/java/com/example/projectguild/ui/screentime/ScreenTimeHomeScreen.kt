@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.Calculate
+import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -59,11 +60,13 @@ fun ScreenTimeHomeScreen(
     viewModel: GuildViewModel,
     onBackToPortal: () -> Unit,
     onNavigateToMath: () -> Unit,
+    onNavigateToAppLocker: () -> Unit,
     onNavigateToProfile: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val player by viewModel.playerProfile.collectAsState()
     val transactions by viewModel.screenTimeTransactions.collectAsState()
+    val lockedPackages by viewModel.lockedAppPackages.collectAsState()
 
     Column(
         modifier = modifier
@@ -297,6 +300,83 @@ fun ScreenTimeHomeScreen(
                         )
                     }
                 }
+            }
+        }
+
+        // App Locker Feature Card
+        Card(
+            shape = RoundedCornerShape(20.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(1.5.dp, GuildCardBorder, RoundedCornerShape(20.dp))
+                .clickable { onNavigateToAppLocker() }
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(18.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(46.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFFE8EAF6)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Lock,
+                        contentDescription = null,
+                        tint = GuildPrimary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text(
+                            text = "APP LOCKER & SHIELD",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Black,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        if (lockedPackages.isNotEmpty()) {
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(GuildScreenTime.copy(alpha = 0.15f))
+                                    .padding(horizontal = 6.dp, vertical = 2.dp)
+                            ) {
+                                Text(
+                                    text = "${lockedPackages.size} LOCKED",
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Black,
+                                    color = GuildScreenTime
+                                )
+                            }
+                        }
+                    }
+                    Text(
+                        text = if (lockedPackages.isEmpty())
+                            "Select apps to block when screen time reaches 0m"
+                        else
+                            "${lockedPackages.size} apps will redirect to Project Guild at 0m",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                Icon(
+                    imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp)
+                )
             }
         }
 
