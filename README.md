@@ -49,14 +49,15 @@ Data & Local Storage Layer (FileGuildStorage with kotlinx.serialization JSON)
 
 ---
 
-## 📱 Primary Screens
+## 📱 Primary Screens & User Flow
 
 | Screen | Description |
 | :--- | :--- |
-| **🏠 Home** | Adventurer dashboard displaying child avatar, Level, XP bar (`720 / 1000 XP`), Screen Time (`45 min`), Guild Coins (`35 🪙`), daily quests, training grounds shortcut, and progress summary. |
-| **🛡️ Guild** | Adventurer's Guild hub categorized into **Active**, **Available**, and **Completed** quests. Features visual difficulty tags, reward badges, and opens the mock photo verification and approval dialog. |
-| **🧠 Math Training** | Training Grounds math arena with difficulty selection (`EASY`, `MEDIUM`, `HARD`), large child-friendly equation cards, multiple-choice buttons, instant celebratory feedback (`+5 MINUTES`), and 5-question session summaries. |
-| **🧙 Profile** | Adventurer character card, level progression, lifetime statistics, achievements (e.g., *First Quest*, *Math Apprentice*), and recent ledger activity history. |
+| **🚪 Main Adventure Portal** | The initial landing screen presenting the child with **2 primary choices**: **Earn Screen Time** or **Earn Digital Coins**. Also displays adventurer greeting, level badge, XP progress bar, and profile link. |
+| **⏱️ Screen Time HQ** | Dedicated screen time hub featuring the available screen time balance (`45 min`), the Math Challenge Arena launcher (+5 min per problem), learning streaks, and screen time earning history. |
+| **🪙 Guild Coins HQ** | Dedicated digital coins hub featuring the guild treasury balance (`35 🪙`), categorized quest board (**Active**, **Available**, **Completed**), mock photo proof submission, simulated parent approvals, and coin reward ledger. |
+| **🧠 Math Arena** | Interactive Training Grounds math challenge with difficulty selection (`EASY`, `MEDIUM`, `HARD`), large child-friendly equation cards, multiple-choice buttons, instant celebratory feedback (`+5 MINUTES`), and back navigation. |
+| **🧙 Adventurer Profile** | Character hero card, level progression, lifetime statistics, achievements (e.g., *First Quest*, *Math Apprentice*), and full transaction history. |
 
 ---
 
