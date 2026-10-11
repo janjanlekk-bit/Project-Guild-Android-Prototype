@@ -7,15 +7,33 @@ plugins {
 android {
     namespace = "com.example.projectguild"
     compileSdk = 36
+    val rawCode = providers.environmentVariable("VERSION_CODE").orNull?.toIntOrNull()
+        ?: (providers.gradleProperty("versionCode").orNull?.toIntOrNull() ?: 2)
+    val vCode = if (rawCode < 10) rawCode + 10 else rawCode
+    val vName = providers.environmentVariable("VERSION_NAME").orNull
+        ?: (providers.gradleProperty("versionName").orNull ?: "1.0.$vCode")
+
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     defaultConfig {
         applicationId = "com.example.projectguild"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = vCode
+        versionName = vName
     }
 
     buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
